@@ -9,9 +9,9 @@ from subprocess import check_output
 import os
 from PIL import Image
 import numpy as np
-import nltk
+import nltk as sa
 from stop_words import get_stop_words
-from nltk.corpus import stopwords
+from nltk.corpus import stopwords, twitter_samples
 from wordcloud import WordCloud, STOPWORDS
 
 # Reading in the file
@@ -122,7 +122,7 @@ plt.rc('ytick', labelsize=SMALL_SIZE)  # fontsize of the tick labels
 plt.rc('legend', fontsize=SMALL_SIZE)  # legend fontsize
 plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
 
-##Pie Chart - Total Messages by Month
+#Pie Chart - Total Messages by Month
 df['DateTime'] = pd.to_datetime(df['DateTime'])
 year_totals = df.groupby(df['DateTime'].dt.year)['MessageType'].count()
 year_avgs = [176.918367, 188.21311475, 183.877551020]
@@ -138,13 +138,31 @@ plt.subplots_adjust(top=1.5)
 plt.tight_layout()
 plt.show
 
+#Line chart, messages by day of the week
+df['DateTime'] = pd.to_datetime(df['DateTime'])
+totals_week = df.groupby(df['DateTime'].dt.day)['MessageType'].count()
+labels2 = 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
+fig1, ax1 = plt.subplots()
+theme = plt.get_cmap('Pastel2')
+ax1.set_prop_cycle("color", [theme(1. * i / len(labels2))
+                             for i in range(len(labels2))])
+ax1.pie(totals_week, autopct='%1.1f%%', shadow=False, rotatelabels=25)
+plt.title('Total Messages By Day of the Week')
+ax1.axis('equal')
+plt.subplots_adjust(top=1.5)
+plt.tight_layout()
+plt.show
+
+
+
+
 # average per year
 fig2, ax2 = plt.subplots()
 theme = plt.get_cmap('Pastel2')
 xLabels = '2019', '2020', '2021'
 yVals = [176.918367, 188.21311475, 183.877551020]
-ax2.set_prop_cycle("color", [theme(1. * i / len(xlabels))
-                             for i in range(len(xlabels))])
+ax2.set_prop_cycle("color", [theme(1. * i / len(xLabels))
+                             for i in range(len(xLabels))])
 ax2.bar(xLabels, yVals, color=['paleturquoise', 'springgreen'])
 plt.ylim(150, 200)
 plt.title('Average Messages By Year')
@@ -172,3 +190,6 @@ wc.generate(str(data))
 plt.imshow(wc)
 plt.axis('off')
 plt.show()
+
+
+
